@@ -1,0 +1,130 @@
+﻿{% extends "ui/base.html" %}
+{% block title %}Nuevo movimiento | Control de Inventarios{% endblock %}
+
+{% block content %}
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+      <h1 class="h4 mb-1">Nuevo movimiento</h1>
+      <div class="text-secondary">Selecciona almacén, producto y cantidad</div>
+    </div>
+    <a class="btn btn-outline-dark btn-sm" href="{% url 'ui:movements_list' %}">Volver</a>
+  </div>
+
+  <div class="card p-4 shadow-sm">
+    <form method="post" novalidate id="movement-form">
+      {% csrf_token %}
+
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">{{ form.movement_type.label }}</label>
+          {{ form.movement_type }}
+          {% for e in form.movement_type.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="col-md-8"></div>
+
+        <div class="col-md-4">
+          <label class="form-label">{{ form.customer.label }}</label>
+          {{ form.customer }}
+          {% for e in form.customer.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">{{ form.branch.label }}</label>
+          {{ form.branch }}
+          {% for e in form.branch.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">{{ form.warehouse.label }}</label>
+          {{ form.warehouse }}
+          {% for e in form.warehouse.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="col-md-8">
+          <label class="form-label">{{ form.product.label }}</label>
+          {{ form.product }}
+          {% for e in form.product.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">{{ form.quantity.label }}</label>
+          {{ form.quantity }}
+          {% for e in form.quantity.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-dark" type="submit">Registrar</button>
+          <a class="btn btn-outline-secondary" href="{% url 'ui:movements_list' %}">Cancelar</a>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <script>
+    const customer = document.querySelector('select[name="customer"]');
+    const branch = document.querySelector('select[name="branch"]');
+    const warehouse = document.querySelector('select[name="warehouse"]');
+
+    function setOptions(select, items, placeholder) {
+      const current = select.value;
+      select.innerHTML = '';
+      const opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = placeholder;
+      select.appendChild(opt);
+
+      for (const it of items) {
+        const o = document.createElement('option');
+        o.value = it.id;
+        o.textContent = it.name;
+        select.appendChild(o);
+      }
+      // intenta mantener selección si existe
+      if (current) select.value = current;
+    }
+
+    async function loadBranches() {
+      const id = customer.value;
+      setOptions(branch, [], 'Selecciona sucursal');
+      setOptions(warehouse, [], 'Selecciona almacén');
+      if (!id) return;
+
+      const r = await fetch(`/ui/branches/?customer_id=${id}`);
+      const j = await r.json();
+      setOptions(branch, j.results, 'Selecciona sucursal');
+    }
+
+    async function loadWarehouses() {
+      const id = branch.value;
+      setOptions(warehouse, [], 'Selecciona almacén');
+      if (!id) return;
+
+      const r = await fetch(`/ui/warehouses/?branch_id=${id}`);
+      const j = await r.json();
+      setOptions(warehouse, j.results, 'Selecciona almacén');
+    }
+
+    customer.addEventListener('change', async () => {
+      await loadBranches();
+    });
+
+    branch.addEventListener('change', async () => {
+      await loadWarehouses();
+    });
+
+    (async function init() {
+      const currentBranch = branch.value;
+      const currentWarehouse = warehouse.value;
+
+      if (customer.value) {
+        await loadBranches();
+        if (currentBranch) {
+          branch.value = currentBranch;
+          await loadWarehouses();
+          if (currentWarehouse) warehouse.value = currentWarehouse;
+        }
+      }
+    })();
+  </script>
+{% endblock %}
