@@ -5,9 +5,9 @@
   <div class="d-flex align-items-center justify-content-between mb-3">
     <div>
       <h1 class="h4 mb-1">Almacenes</h1>
-      <div class="text-secondary">Administración de almacenes por sucursal</div>
+      <div class="text-secondary">Cada almacén debe pertenecer a una sucursal</div>
     </div>
-    <a class="btn btn-dark" href="{% url 'ui:warehouses_create' %}">Nuevo almacén</a>
+    <a class="btn btn-dark btn-sm" href="{% url 'ui:warehouses_create' %}">Nuevo almacén</a>
   </div>
 
   {% if messages %}
@@ -19,23 +19,19 @@
   <div class="card p-3 mb-3 shadow-sm">
     <form class="row g-2 align-items-center" method="get">
       <div class="col-md-4">
-        <select class="form-select" name="customer_id">
+        <select class="form-select" name="customer_id" id="customer_id">
           <option value="">Todos los clientes</option>
           {% for c in customers %}
-            <option value="{{ c.id }}" {% if request.GET.customer_id == c.id|stringformat:"s" %}selected{% endif %}>
-              {{ c.name }}
-            </option>
+            <option value="{{ c.id }}" {% if request.GET.customer_id == c.id|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>
           {% endfor %}
         </select>
       </div>
 
       <div class="col-md-4">
-        <select class="form-select" name="branch_id">
+        <select class="form-select" name="branch_id" id="branch_id">
           <option value="">Todas las sucursales</option>
           {% for b in branches %}
-            <option value="{{ b.id }}" {% if request.GET.branch_id == b.id|stringformat:"s" %}selected{% endif %}>
-              {{ b.customer.name }} - {{ b.name }}
-            </option>
+            <option value="{{ b.id }}" {% if request.GET.branch_id == b.id|stringformat:"s" %}selected{% endif %}>{{ b.customer.name }}  {{ b.name }}</option>
           {% endfor %}
         </select>
       </div>
@@ -50,10 +46,6 @@
 
       <div class="col-md-2 d-grid">
         <button class="btn btn-outline-dark" type="submit">Filtrar</button>
-      </div>
-
-      <div class="col-12">
-        <input class="form-control" name="q" value="{{ request.GET.q }}" placeholder="Buscar por nombre o código">
       </div>
     </form>
   </div>
@@ -76,7 +68,7 @@
           <tr>
             <td class="fw-semibold">{{ w.branch.customer.name }}</td>
             <td>{{ w.branch.name }}</td>
-            <td class="fw-semibold">{{ w.name }}</td>
+            <td>{{ w.name }}</td>
             <td class="text-secondary">{{ w.code|default:"" }}</td>
             <td class="text-secondary">{{ w.address|default:"" }}</td>
             <td>

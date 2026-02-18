@@ -8,6 +8,9 @@ from apps.locations.models import Branch, Warehouse
 from .forms import BranchForm, WarehouseForm
 
 
+# -------------------------
+# Sucursales
+# -------------------------
 class BranchListView(ListView):
     model = Branch
     template_name = "ui/branches/list.html"
@@ -42,13 +45,6 @@ class BranchCreateView(CreateView):
     form_class = BranchForm
     template_name = "ui/branches/form.html"
 
-    def get_initial(self):
-        initial = super().get_initial()
-        customer_id = (self.request.GET.get("customer_id") or "").strip()
-        if customer_id.isdigit():
-            initial["customer"] = int(customer_id)
-        return initial
-
     def form_valid(self, form):
         r = super().form_valid(form)
         messages.success(self.request, "Sucursal creada correctamente.")
@@ -80,10 +76,9 @@ def branch_toggle_active(request, pk: int):
     return redirect("ui:branches_list")
 
 
-# ----------------------------
-# Almacenes (Warehouse) UI
-# ----------------------------
-
+# -------------------------
+# Almacenes
+# -------------------------
 class WarehouseListView(ListView):
     model = Warehouse
     template_name = "ui/warehouses/list.html"
@@ -102,7 +97,7 @@ class WarehouseListView(ListView):
         if branch_id.isdigit():
             qs = qs.filter(branch_id=int(branch_id))
         if q:
-            qs = qs.filter(name__icontains=q) | qs.filter(code__icontains=q)
+            qs = qs.filter(name__icontains=q)
         if status == "active":
             qs = qs.filter(is_active=True)
         if status == "inactive":
@@ -113,13 +108,9 @@ class WarehouseListView(ListView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx["customers"] = Customer.objects.order_by("name")
-
-        # Para el filtro de sucursal: si eligieron cliente, mostrar solo sus sucursales
-        customer_id = (self.request.GET.get("customer_id") or "").strip()
-        branches = Branch.objects.select_related("customer").order_by("customer__name", "name")
-        if customer_id.isdigit():
-            branches = branches.filter(customer_id=int(customer_id))
-        ctx["branches"] = branches
+        # para el filtro de sucursal (si ya eligieron cliente, puedes filtrar en template con JS,
+        # pero aquí al menos mandamos todas, la UI puede refinarlo luego)
+        ctx["branches"] = Branch.objects.select_related("customer").order_by("customer__name", "name")
         return ctx
 
 
@@ -128,12 +119,11 @@ class WarehouseCreateView(CreateView):
     form_class = WarehouseForm
     template_name = "ui/warehouses/form.html"
 
-    def get_initial(self):
-        initial = super().get_initial()
-        branch_id = (self.request.GET.get("branch_id") or "").strip()
-        if branch_id.isdigit():
-            initial["branch"] = int(branch_id)
-        return initial
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        customer_id = (self.request.POST.get("customer") or self.request.GET.get("customer") or "").strip()
+        kwargs["customer_id"] = int(customer_id) if customer_id.isdigit() else None
+        return kwargs
 
     def form_valid(self, form):
         r = super().form_valid(form)
@@ -148,6 +138,14 @@ class WarehouseUpdateView(UpdateView):
     model = Warehouse
     form_class = WarehouseForm
     template_name = "ui/warehouses/form.html"
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        # al editar, el form ya infiere customer desde la sucursal,
+        # pero si viene customer en query lo respetamos para recargar combos
+        customer_id = (self.request.POST.get("customer") or self.request.GET.get("customer") or "").strip()
+        kwargs["customer_id"] = int(customer_id) if customer_id.isdigit() else None
+        return kwargs
 
     def form_valid(self, form):
         r = super().form_valid(form)

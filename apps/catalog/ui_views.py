@@ -1,9 +1,10 @@
 ﻿from django.contrib import messages
+from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import CreateView, ListView, UpdateView
-from django.db.models import Q
 
+from apps.customers.models import Customer
 from apps.catalog.models import Product
 from .forms import ProductForm
 
@@ -15,9 +16,14 @@ class ProductListView(ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        qs = Product.objects.all().order_by("name")
+        qs = Product.objects.select_related("customer").all().order_by("customer__name", "sku")
+
+        customer_id = (self.request.GET.get("customer_id") or "").strip()
         q = (self.request.GET.get("q") or "").strip()
         status = (self.request.GET.get("status") or "").strip()
+
+        if customer_id.isdigit():
+            qs = qs.filter(customer_id=int(customer_id))
 
         if q:
             qs = qs.filter(Q(name__icontains=q) | Q(sku__icontains=q))
@@ -28,6 +34,11 @@ class ProductListView(ListView):
             qs = qs.filter(is_active=False)
 
         return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx["customers"] = Customer.objects.order_by("name")
+        return ctx
 
 
 class ProductCreateView(CreateView):
