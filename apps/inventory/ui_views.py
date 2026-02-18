@@ -8,7 +8,6 @@ from apps.inventory.models import Movement
 from apps.inventory.services import InsufficientStock, MovementInput, record_movement
 from .forms import MovementForm
 
-
 class MovementListView(ListView):
     model = Movement
     template_name = "ui/movements/list.html"
@@ -22,7 +21,6 @@ class MovementListView(ListView):
             .order_by("-occurred_at")
         )
 
-
 class MovementCreateView(FormView):
     template_name = "ui/movements/form.html"
     form_class = MovementForm
@@ -31,7 +29,6 @@ class MovementCreateView(FormView):
         kwargs = super().get_form_kwargs()
         customer_id = (self.request.POST.get("customer") or self.request.GET.get("customer") or "").strip()
         branch_id = (self.request.POST.get("branch") or self.request.GET.get("branch") or "").strip()
-
         kwargs["customer_id"] = int(customer_id) if customer_id.isdigit() else None
         kwargs["branch_id"] = int(branch_id) if branch_id.isdigit() else None
         return kwargs
@@ -55,13 +52,8 @@ class MovementCreateView(FormView):
     def get_success_url(self):
         return reverse("ui:movements_list")
 
-
 def movement_pdf(request, pk):
-    m = (
-        Movement.objects.select_related("warehouse__branch__customer", "product")
-        .filter(pk=pk)
-        .first()
-    )
+    m = Movement.objects.filter(pk=pk).first()
     if not m or not m.pdf:
         raise Http404("PDF no disponible")
 

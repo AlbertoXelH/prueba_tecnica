@@ -5,7 +5,7 @@
   <div class="d-flex align-items-center justify-content-between mb-3">
     <div>
       <h1 class="h4 mb-1">Nuevo movimiento</h1>
-      <div class="text-secondary">Selecciona almacén, producto y cantidad</div>
+      <div class="text-secondary">Selecciona cliente, almacén, producto y cantidad</div>
     </div>
     <a class="btn btn-outline-dark btn-sm" href="{% url 'ui:movements_list' %}">Volver</a>
   </div>
@@ -65,34 +65,40 @@
     const customer = document.querySelector('select[name="customer"]');
     const branch = document.querySelector('select[name="branch"]');
     const warehouse = document.querySelector('select[name="warehouse"]');
+    const product = document.querySelector('select[name="product"]');
+
+    const branchesUrl = "{% url 'ui:branches_by_customer' %}";
+    const warehousesUrl = "{% url 'ui:warehouses_by_branch' %}";
+    const productsUrl = "{% url 'ui:products_by_customer' %}";
 
     function setOptions(select, items, placeholder) {
-      const current = select.value;
       select.innerHTML = '';
       const opt = document.createElement('option');
       opt.value = '';
       opt.textContent = placeholder;
       select.appendChild(opt);
-
       for (const it of items) {
         const o = document.createElement('option');
         o.value = it.id;
         o.textContent = it.name;
         select.appendChild(o);
       }
-      // intenta mantener selección si existe
-      if (current) select.value = current;
     }
 
-    async function loadBranches() {
+    async function loadBranchesAndProducts() {
       const id = customer.value;
       setOptions(branch, [], 'Selecciona sucursal');
       setOptions(warehouse, [], 'Selecciona almacén');
+      setOptions(product, [], 'Selecciona producto');
       if (!id) return;
 
-      const r = await fetch(`/ui/branches/?customer_id=${id}`);
-      const j = await r.json();
-      setOptions(branch, j.results, 'Selecciona sucursal');
+      const rb = await fetch(`${branchesUrl}?customer_id=${id}`);
+      const jb = await rb.json();
+      setOptions(branch, jb.results, 'Selecciona sucursal');
+
+      const rp = await fetch(`${productsUrl}?customer_id=${id}`);
+      const jp = await rp.json();
+      setOptions(product, jp.results, 'Selecciona producto');
     }
 
     async function loadWarehouses() {
@@ -100,31 +106,15 @@
       setOptions(warehouse, [], 'Selecciona almacén');
       if (!id) return;
 
-      const r = await fetch(`/ui/warehouses/?branch_id=${id}`);
+      const r = await fetch(`${warehousesUrl}?branch_id=${id}`);
       const j = await r.json();
       setOptions(warehouse, j.results, 'Selecciona almacén');
     }
 
-    customer.addEventListener('change', async () => {
-      await loadBranches();
-    });
+    customer.addEventListener('change', loadBranchesAndProducts);
+    branch.addEventListener('change', loadWarehouses);
 
-    branch.addEventListener('change', async () => {
-      await loadWarehouses();
-    });
-
-    (async function init() {
-      const currentBranch = branch.value;
-      const currentWarehouse = warehouse.value;
-
-      if (customer.value) {
-        await loadBranches();
-        if (currentBranch) {
-          branch.value = currentBranch;
-          await loadWarehouses();
-          if (currentWarehouse) warehouse.value = currentWarehouse;
-        }
-      }
-    })();
+    if (customer.value) loadBranchesAndProducts();
+    if (branch.value) loadWarehouses();
   </script>
 {% endblock %}

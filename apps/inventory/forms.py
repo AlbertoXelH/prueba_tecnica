@@ -1,10 +1,8 @@
 ﻿from django import forms
-
 from apps.customers.models import Customer
 from apps.locations.models import Branch, Warehouse
 from apps.catalog.models import Product
 from apps.inventory.models import MovementType
-
 
 class MovementForm(forms.Form):
     movement_type = forms.ChoiceField(
@@ -12,31 +10,29 @@ class MovementForm(forms.Form):
         label="Tipo de movimiento",
         widget=forms.Select(attrs={"class": "form-select"}),
     )
-
     customer = forms.ModelChoiceField(
         queryset=Customer.objects.order_by("name"),
         label="Cliente",
         widget=forms.Select(attrs={"class": "form-select"}),
     )
-
     branch = forms.ModelChoiceField(
         queryset=Branch.objects.none(),
         label="Sucursal",
         widget=forms.Select(attrs={"class": "form-select"}),
+        required=True,
     )
-
     warehouse = forms.ModelChoiceField(
         queryset=Warehouse.objects.none(),
         label="Almacén",
         widget=forms.Select(attrs={"class": "form-select"}),
+        required=True,
     )
-
     product = forms.ModelChoiceField(
-        queryset=Product.objects.order_by("name"),
+        queryset=Product.objects.none(),
         label="Producto",
         widget=forms.Select(attrs={"class": "form-select"}),
+        required=True,
     )
-
     quantity = forms.IntegerField(
         min_value=1,
         label="Cantidad",
@@ -50,6 +46,7 @@ class MovementForm(forms.Form):
 
         if customer_id:
             self.fields["branch"].queryset = Branch.objects.filter(customer_id=customer_id).order_by("name")
+            self.fields["product"].queryset = Product.objects.filter(customer_id=customer_id).order_by("sku")
 
         if branch_id:
             self.fields["warehouse"].queryset = Warehouse.objects.filter(branch_id=branch_id).order_by("name")

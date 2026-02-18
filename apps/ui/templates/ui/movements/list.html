@@ -53,8 +53,6 @@
             <td class="text-end">
               {% if mv.pdf %}
                 <a class="btn btn-sm btn-outline-dark" href="{% url 'ui:movements_pdf' mv.id %}">Descargar</a>
-              {% else %}
-                <span class="text-secondary"></span>
               {% endif %}
             </td>
           </tr>

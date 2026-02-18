@@ -7,7 +7,7 @@
       <h1 class="h4 mb-1">{% if object %}Editar almacén{% else %}Nuevo almacén{% endif %}</h1>
       <div class="text-secondary">Completa los datos y guarda</div>
     </div>
-    <a class="btn btn-outline-dark btn-sm" href="{% url 'ui:warehouses_list' %}">Volver</a>
+    <a class="btn btn-outline-dark btn-sm" href="{% url 'ui:branches_list' %}">Volver</a>
   </div>
 
   <div class="card p-4 shadow-sm">
@@ -48,9 +48,10 @@
 
         <div class="col-12 d-flex gap-2">
           <button class="btn btn-dark" type="submit">Guardar</button>
-          <a class="btn btn-outline-secondary" href="{% url 'ui:warehouses_list' %}">Cancelar</a>
+          <a class="btn btn-outline-secondary" href="{% url 'ui:branches_list' %}">Cancelar</a>
         </div>
       </div>
     </form>
   </div>
 {% endblock %}
+

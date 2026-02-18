@@ -1,5 +1,4 @@
 ﻿from django.urls import include, path
-
 from .views import HomeView
 
 app_name = "ui"

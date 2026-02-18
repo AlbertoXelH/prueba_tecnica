@@ -1,8 +1,6 @@
 ﻿from django.http import JsonResponse
 from django.views.decorators.http import require_GET
-
 from apps.locations.models import Branch, Warehouse
-
 
 @require_GET
 def branches_by_customer(request):
@@ -12,7 +10,6 @@ def branches_by_customer(request):
         qs = qs.filter(customer_id=int(customer_id))
     data = [{"id": b.id, "name": b.name} for b in qs]
     return JsonResponse({"results": data})
-
 
 @require_GET
 def warehouses_by_branch(request):
