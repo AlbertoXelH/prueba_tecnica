@@ -1,0 +1,68 @@
+﻿{% extends "ui/base.html" %}
+{% block title %}Sucursal | Control de Inventarios{% endblock %}
+
+{% block content %}
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+      <h1 class="h4 mb-1">{% if object %}Editar sucursal{% else %}Nueva sucursal{% endif %}</h1>
+      <div class="text-secondary">Completa los datos y guarda</div>
+    </div>
+    <a class="btn btn-outline-dark btn-sm" href="{% url 'ui:branches_list' %}">Volver</a>
+  </div>
+
+  <div class="card p-4 shadow-sm">
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">{{ form.customer.label }}</label>
+          {{ form.customer }}
+          {% for e in form.customer.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">{{ form.name.label }}</label>
+          {{ form.name }}
+          {% for e in form.name.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">{{ form.code.label }}</label>
+          {{ form.code }}
+          {% for e in form.code.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="col-md-8">
+          <label class="form-label">{{ form.address.label }}</label>
+          {{ form.address }}
+          {% for e in form.address.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">{{ form.city.label }}</label>
+          {{ form.city }}
+          {% for e in form.city.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="col-md-6">
+          <label class="form-label">{{ form.state.label }}</label>
+          {{ form.state }}
+          {% for e in form.state.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="col-12">
+          <div class="form-check">
+            {{ form.is_active }}
+            <label class="form-check-label">{{ form.is_active.label }}</label>
+          </div>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-dark" type="submit">Guardar</button>
+          <a class="btn btn-outline-secondary" href="{% url 'ui:branches_list' %}">Cancelar</a>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock %}
