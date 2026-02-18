@@ -1,0 +1,56 @@
+﻿{% extends "ui/base.html" %}
+{% block title %}Producto | Control de Inventarios{% endblock %}
+
+{% block content %}
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+      <h1 class="h4 mb-1">{% if object %}Editar producto{% else %}Nuevo producto{% endif %}</h1>
+      <div class="text-secondary">Completa los datos y guarda</div>
+    </div>
+    <a class="btn btn-outline-dark btn-sm" href="{% url 'ui:products_list' %}">Volver</a>
+  </div>
+
+  <div class="card p-4 shadow-sm">
+    <form method="post" novalidate>
+      {% csrf_token %}
+
+      <div class="row g-3">
+        <div class="col-md-4">
+          <label class="form-label">{{ form.sku.label }}</label>
+          {{ form.sku }}
+          {% for e in form.sku.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="col-md-8">
+          <label class="form-label">{{ form.name.label }}</label>
+          {{ form.name }}
+          {% for e in form.name.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="col-12">
+          <label class="form-label">{{ form.description.label }}</label>
+          {{ form.description }}
+          {% for e in form.description.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="col-md-4">
+          <label class="form-label">{{ form.unit.label }}</label>
+          {{ form.unit }}
+          {% for e in form.unit.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        </div>
+
+        <div class="col-md-8 d-flex align-items-end">
+          <div class="form-check">
+            {{ form.is_active }}
+            <label class="form-check-label">{{ form.is_active.label }}</label>
+          </div>
+        </div>
+
+        <div class="col-12 d-flex gap-2">
+          <button class="btn btn-dark" type="submit">Guardar</button>
+          <a class="btn btn-outline-secondary" href="{% url 'ui:products_list' %}">Cancelar</a>
+        </div>
+      </div>
+    </form>
+  </div>
+{% endblock %}

@@ -7,4 +7,5 @@ urlpatterns = [
     path("", HomeView.as_view(), name="home"),
     path("", include("apps.customers.ui_urls")),
     path("", include("apps.locations.ui_urls")),
+    path("", include("apps.catalog.ui_urls")),
 ]
