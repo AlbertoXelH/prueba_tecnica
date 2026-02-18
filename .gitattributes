@@ -2,3 +2,5 @@
 *.py text eol=lf
 *.txt text eol=lf
 *.md text eol=lf
+*.sql text eol=lf
+.gitignore text eol=lf
