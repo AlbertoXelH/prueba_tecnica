@@ -6,3 +6,35 @@ body { background: var(--ui-bg); }
 .card { border: 1px solid var(--ui-border); border-radius: 14px; }
 .btn { border-radius: 10px; }
 .table { background: var(--ui-card); border-radius: 14px; overflow: hidden; }
+
+:root{
+  --ui-radius: 14px;
+}
+
+body{
+  background: #f7f8fb;
+}
+
+.card{
+  border-radius: var(--ui-radius);
+  border: 1px solid rgba(0,0,0,.06);
+}
+
+.table-responsive.card{
+  border-radius: var(--ui-radius);
+  overflow: hidden;
+}
+
+.btn{
+  border-radius: 12px;
+}
+
+.btn-group .btn{
+  border-radius: 12px;
+}
+
+.badge{
+  border-radius: 999px;
+  padding: .45em .75em;
+}
+
