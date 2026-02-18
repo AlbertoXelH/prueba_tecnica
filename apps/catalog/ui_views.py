@@ -2,6 +2,7 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import CreateView, ListView, UpdateView
+from django.db.models import Q
 
 from apps.catalog.models import Product
 from .forms import ProductForm
@@ -19,7 +20,7 @@ class ProductListView(ListView):
         status = (self.request.GET.get("status") or "").strip()
 
         if q:
-            qs = qs.filter(name__icontains=q) | qs.filter(sku__icontains=q)
+            qs = qs.filter(Q(name__icontains=q) | Q(sku__icontains=q))
 
         if status == "active":
             qs = qs.filter(is_active=True)
