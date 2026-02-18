@@ -1,4 +1,7 @@
-﻿from django.urls import path
+﻿from rest_framework.routers import DefaultRouter
+from .views import CustomerViewSet
 
-app_name = "customers"
-urlpatterns = []
+router = DefaultRouter()
+router.register(r"customers", CustomerViewSet, basename="customers")
+
+urlpatterns = router.urls

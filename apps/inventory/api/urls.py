@@ -1,4 +1,8 @@
-﻿from django.urls import path
+﻿from rest_framework.routers import DefaultRouter
+from .views import StockViewSet, MovementViewSet
 
-app_name = "inventory"
-urlpatterns = []
+router = DefaultRouter()
+router.register(r"stocks", StockViewSet, basename="stocks")
+router.register(r"movements", MovementViewSet, basename="movements")
+
+urlpatterns = router.urls
