@@ -26,7 +26,7 @@ INSTALLED_APPS = [
     "apps.customers",
     "apps.locations",
     "apps.catalog",
-    "apps.inventory",
+    "apps.inventory.apps.InventoryConfig",
     "apps.ui",
 ]
 
@@ -95,4 +95,5 @@ REST_FRAMEWORK = {
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
 

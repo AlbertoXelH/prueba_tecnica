@@ -1,7 +1,12 @@
 ﻿from django.db import models
 
 class Product(models.Model):
-    sku = models.CharField(max_length=80, unique=True)
+    customer = models.ForeignKey(
+        "customers.Customer",
+        on_delete=models.PROTECT,
+        related_name="products",
+    )
+    sku = models.CharField(max_length=80)
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
     unit = models.CharField(max_length=30, blank=True)
@@ -10,7 +15,10 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        ordering = ["sku"]
+        ordering = ["customer__name", "sku"]
+        constraints = [
+            models.UniqueConstraint(fields=["customer", "sku"], name="uniq_product_customer_sku")
+        ]
 
     def __str__(self):
         return f"{self.sku} - {self.name}"

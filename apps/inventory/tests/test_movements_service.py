@@ -7,12 +7,14 @@ from apps.inventory.services import MovementInput, InsufficientStock, record_mov
 
 pytestmark = pytest.mark.django_db
 
+
 def setup_ctx():
     c = Customer.objects.create(name="ACME")
     b = Branch.objects.create(customer=c, name="Centro")
     w = Warehouse.objects.create(branch=b, name="Principal")
-    p = Product.objects.create(sku="SKU-1", name="Producto 1")
+    p = Product.objects.create(customer=c, sku="SKU-1", name="Producto 1")
     return w, p
+
 
 def test_in_and_out_updates_stock_and_records_before_after():
     w, p = setup_ctx()
@@ -27,6 +29,7 @@ def test_in_and_out_updates_stock_and_records_before_after():
 
     s = Stock.objects.get(warehouse=w, product=p)
     assert s.quantity == 6
+
 
 def test_out_cannot_exceed_stock():
     w, p = setup_ctx()
