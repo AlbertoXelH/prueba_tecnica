@@ -1,5 +1,6 @@
 ﻿from django.db import models
 
+
 class Product(models.Model):
     customer = models.ForeignKey(
         "customers.Customer",
@@ -8,8 +9,8 @@ class Product(models.Model):
     )
     sku = models.CharField(max_length=80)
     name = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    unit = models.CharField(max_length=30, blank=True)
+    description = models.TextField()
+    unit = models.CharField(max_length=30)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

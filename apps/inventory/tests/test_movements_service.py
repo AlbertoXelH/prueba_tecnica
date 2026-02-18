@@ -9,10 +9,33 @@ pytestmark = pytest.mark.django_db
 
 
 def setup_ctx():
-    c = Customer.objects.create(name="ACME")
-    b = Branch.objects.create(customer=c, name="Centro")
-    w = Warehouse.objects.create(branch=b, name="Principal")
-    p = Product.objects.create(customer=c, sku="SKU-1", name="Producto 1")
+    c = Customer.objects.create(
+        name="ACME",
+        tax_id="XAXX010101000",
+        email="acme@example.com",
+        phone="5555555555",
+    )
+    b = Branch.objects.create(
+        customer=c,
+        name="Centro",
+        code="BR-001",
+        address="Calle 1 #123",
+        city="CDMX",
+        state="CDMX",
+    )
+    w = Warehouse.objects.create(
+        branch=b,
+        name="Principal",
+        code="WH-001",
+        address="Bodega 10",
+    )
+    p = Product.objects.create(
+        customer=c,
+        sku="SKU-1",
+        name="Producto 1",
+        description="Desc 1",
+        unit="pz",
+    )
     return w, p
 
 

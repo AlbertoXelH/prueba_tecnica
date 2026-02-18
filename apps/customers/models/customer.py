@@ -1,10 +1,12 @@
 ﻿from django.db import models
 
+
 class Customer(models.Model):
     name = models.CharField(max_length=200)
-    tax_id = models.CharField(max_length=50, blank=True)
-    email = models.EmailField(blank=True)
-    phone = models.CharField(max_length=30, blank=True)
+    tax_id = models.CharField(max_length=30)
+    email = models.EmailField()
+    phone = models.CharField(max_length=30)
+
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
