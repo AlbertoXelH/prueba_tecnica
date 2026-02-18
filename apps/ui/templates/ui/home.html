@@ -20,7 +20,11 @@
       <div class="card p-4 h-100 shadow-sm">
         <div class="fw-semibold mb-2">Sucursales y almacenes</div>
         <div class="text-secondary mb-3">Organización por cliente.</div>
-        <a class="btn btn-dark w-100" href="{% url 'ui:branches_list' %}">Entrar</a>
+
+        <div class="d-grid gap-2">
+          <a class="btn btn-dark w-100" href="{% url 'ui:branches_list' %}">Sucursales</a>
+          <a class="btn btn-outline-dark w-100" href="{% url 'ui:warehouses_list' %}">Almacenes</a>
+        </div>
       </div>
     </div>
 

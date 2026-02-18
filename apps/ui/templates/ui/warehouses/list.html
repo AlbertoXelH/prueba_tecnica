@@ -1,0 +1,104 @@
+﻿{% extends "ui/base.html" %}
+{% block title %}Almacenes | Control de Inventarios{% endblock %}
+
+{% block content %}
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div>
+      <h1 class="h4 mb-1">Almacenes</h1>
+      <div class="text-secondary">Administración de almacenes por sucursal</div>
+    </div>
+    <a class="btn btn-dark btn-sm" href="{% url 'ui:warehouses_create' %}">Nuevo almacén</a>
+  </div>
+
+  {% if messages %}
+    {% for m in messages %}
+      <div class="alert alert-success py-2">{{ m }}</div>
+    {% endfor %}
+  {% endif %}
+
+  <div class="card p-3 mb-3 shadow-sm">
+    <form class="row g-2 align-items-center" method="get">
+      <div class="col-md-3">
+        <select class="form-select" name="customer_id">
+          <option value="">Todos los clientes</option>
+          {% for c in customers %}
+            <option value="{{ c.id }}" {% if request.GET.customer_id == c.id|stringformat:"s" %}selected{% endif %}>{{ c.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-4">
+        <select class="form-select" name="branch_id">
+          <option value="">Todas las sucursales</option>
+          {% for b in branches %}
+            <option value="{{ b.id }}" {% if request.GET.branch_id == b.id|stringformat:"s" %}selected{% endif %}>
+              {{ b.customer.name }} - {{ b.name }}
+            </option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <input class="form-control" name="q" value="{{ request.GET.q }}" placeholder="Buscar por nombre">
+      </div>
+
+      <div class="col-md-1">
+        <select class="form-select" name="status">
+          <option value="" {% if not request.GET.status %}selected{% endif %}>Todas</option>
+          <option value="active" {% if request.GET.status == "active" %}selected{% endif %}>Activos</option>
+          <option value="inactive" {% if request.GET.status == "inactive" %}selected{% endif %}>Inactivos</option>
+        </select>
+      </div>
+
+      <div class="col-md-1 d-grid">
+        <button class="btn btn-outline-dark" type="submit">Filtrar</button>
+      </div>
+    </form>
+  </div>
+
+  <div class="table-responsive card shadow-sm">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Cliente</th>
+          <th>Sucursal</th>
+          <th>Almacén</th>
+          <th>Código</th>
+          <th>Dirección</th>
+          <th>Estado</th>
+          <th class="text-end">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for w in warehouses %}
+          <tr>
+            <td class="fw-semibold">{{ w.branch.customer.name }}</td>
+            <td>{{ w.branch.name }}</td>
+            <td>{{ w.name }}</td>
+            <td class="text-secondary">{{ w.code|default:"" }}</td>
+            <td class="text-secondary">{{ w.address|default:"" }}</td>
+            <td>
+              {% if w.is_active %}
+                <span class="badge text-bg-success">Activo</span>
+              {% else %}
+                <span class="badge text-bg-secondary">Inactivo</span>
+              {% endif %}
+            </td>
+            <td class="text-end">
+              <div class="btn-group btn-group-sm" role="group">
+                <a class="btn btn-outline-dark" href="{% url 'ui:warehouses_edit' w.id %}">Editar</a>
+                <a class="btn btn-outline-secondary" href="{% url 'ui:warehouses_toggle' w.id %}">
+                  {% if w.is_active %}Desactivar{% else %}Activar{% endif %}
+                </a>
+              </div>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="7" class="text-center text-secondary py-4">No hay almacenes aún.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
