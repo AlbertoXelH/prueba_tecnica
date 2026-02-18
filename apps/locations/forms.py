@@ -1,5 +1,6 @@
 ﻿from django import forms
-from apps.locations.models import Branch
+from apps.locations.models import Branch, Warehouse
+
 
 class BranchForm(forms.ModelForm):
     class Meta:
@@ -23,45 +24,33 @@ class BranchForm(forms.ModelForm):
             "state": forms.TextInput(attrs={"class": "form-control", "placeholder": "Estado"}),
             "is_active": forms.CheckboxInput(attrs={"class": "form-check-input"}),
         }
-from django import forms
-from apps.locations.models import Warehouse
+
 
 class WarehouseForm(forms.ModelForm):
+    branch = forms.ModelChoiceField(
+        queryset=Branch.objects.select_related("customer").order_by("customer__name", "name"),
+        label="Sucursal",
+        widget=forms.Select(attrs={"class": "form-select"}),
+    )
+
     class Meta:
         model = Warehouse
         fields = ["branch", "name", "code", "address", "is_active"]
         labels = {
-            "branch": "Sucursal",
             "name": "Nombre",
             "code": "Código",
             "address": "Dirección",
             "is_active": "Activo",
         }
         widgets = {
-            "branch": forms.Select(attrs={"class": "form-select"}),
             "name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej. Principal"}),
             "code": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej. WH-001"}),
-            "address": forms.TextInput(attrs={"class": "form-control", "placeholder": "Dirección del almacén"}),
+            "address": forms.TextInput(attrs={"class": "form-control", "placeholder": "Calle y número"}),
             "is_active": forms.CheckboxInput(attrs={"class": "form-check-input"}),
         }
-from django import forms
-from apps.locations.models import Warehouse
 
-class WarehouseForm(forms.ModelForm):
-    class Meta:
-        model = Warehouse
-        fields = ["branch", "name", "code", "address", "is_active"]
-        labels = {
-            "branch": "Sucursal",
-            "name": "Nombre",
-            "code": "Código",
-            "address": "Dirección",
-            "is_active": "Activo",
-        }
-        widgets = {
-            "branch": forms.Select(attrs={"class": "form-select"}),
-            "name": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej. Principal"}),
-            "code": forms.TextInput(attrs={"class": "form-control", "placeholder": "Ej. WH-001"}),
-            "address": forms.TextInput(attrs={"class": "form-control", "placeholder": "Dirección del almacén"}),
-            "is_active": forms.CheckboxInput(attrs={"class": "form-check-input"}),
-        }
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Etiqueta más clara: "Cliente - Sucursal"
+        self.fields["branch"].label_from_instance = lambda b: f"{b.customer.name} - {b.name}"
