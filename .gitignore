@@ -10,3 +10,8 @@ staticfiles/
 .coverage
 htmlcov/
 .DS_Store
+
+__MACOSX/
+._*
+third_party/raw/
+
