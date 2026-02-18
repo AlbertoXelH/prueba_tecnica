@@ -1,0 +1,8 @@
+﻿:root { --ui-bg: #f6f7fb; --ui-card: #ffffff; --ui-border: #e7e9f1; }
+
+body { background: var(--ui-bg); }
+.navbar { background: #111827 !important; }
+.navbar .navbar-brand, .navbar .nav-link { color: #fff !important; }
+.card { border: 1px solid var(--ui-border); border-radius: 14px; }
+.btn { border-radius: 10px; }
+.table { background: var(--ui-card); border-radius: 14px; overflow: hidden; }

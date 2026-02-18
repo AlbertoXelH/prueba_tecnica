@@ -1,0 +1,55 @@
+﻿{% extends "ui/base.html" %}
+{% block title %}Inicio | Control de Inventarios{% endblock %}
+
+{% block content %}
+  <div class="row g-3">
+    <div class="col-12">
+      <div class="card p-4">
+        <h1 class="h4 mb-1">Bienvenido</h1>
+        <p class="mb-0 text-secondary">
+          Usa el menú para gestionar clientes, sucursales, almacenes, productos y movimientos.
+        </p>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="card p-4 h-100">
+        <div class="fw-semibold mb-2">Clientes</div>
+        <div class="text-secondary mb-3">Alta, edición y listado de clientes.</div>
+        <a class="btn btn-dark w-100 disabled" href="#">Entrar</a>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="card p-4 h-100">
+        <div class="fw-semibold mb-2">Sucursales y almacenes</div>
+        <div class="text-secondary mb-3">Organización por cliente.</div>
+        <a class="btn btn-dark w-100 disabled" href="#">Entrar</a>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-4">
+      <div class="card p-4 h-100">
+        <div class="fw-semibold mb-2">Productos</div>
+        <div class="text-secondary mb-3">Catálogo y control de activos.</div>
+        <a class="btn btn-dark w-100 disabled" href="#">Entrar</a>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-6">
+      <div class="card p-4 h-100">
+        <div class="fw-semibold mb-2">Movimientos</div>
+        <div class="text-secondary mb-3">Ingresos/Egresos con comprobante PDF.</div>
+        <a class="btn btn-dark w-100 disabled" href="#">Entrar</a>
+      </div>
+    </div>
+
+    <div class="col-md-6 col-lg-6">
+      <div class="card p-4 h-100">
+        <div class="fw-semibold mb-2">Existencias</div>
+        <div class="text-secondary mb-3">Consulta de stock por almacén y producto.</div>
+        <a class="btn btn-dark w-100 disabled" href="#">Entrar</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}
