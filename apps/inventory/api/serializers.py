@@ -9,10 +9,18 @@ class StockSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 class MovementSerializer(serializers.ModelSerializer):
+    pdf_url = serializers.SerializerMethodField()
+
     class Meta:
         model = Movement
-        fields = ["id", "movement_type", "warehouse", "product", "quantity", "stock_before", "stock_after", "occurred_at", "pdf"]
+        fields = ["id", "movement_type", "warehouse", "product", "quantity", "stock_before", "stock_after", "occurred_at", "pdf", "pdf_url"]
         read_only_fields = fields
+
+    def get_pdf_url(self, obj):
+        if not obj.pdf:
+            return None
+        request = self.context.get("request")
+        return request.build_absolute_uri(obj.pdf.url) if request else obj.pdf.url
 
 class MovementCreateSerializer(serializers.Serializer):
     movement_type = serializers.ChoiceField(choices=["IN", "OUT"])
